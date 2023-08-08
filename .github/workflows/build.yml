@@ -31,7 +31,7 @@ jobs:
             mv stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install.tar.zst.sha256 ../
             cd ..
             sha256sum stable-bzImage-${{ env.stable_version }}-x86_64-wsl2 > stable-bzImage-${{ env.stable_version }}-x86_64-wsl2.sha256
-            ls -l
+            tar -cJf WSL2-Linux-Kernel-Rolling-linux-wsl-stable-${{ env.stable_version }}.tar.xz WSL2-Linux-Kernel-Rolling-linux-wsl-stable-${{ env.stable_version }}/
             
           else
             wget https://github.com/Nevuly/WSL2-Linux-Kernel-Rolling-LTS/archive/refs/tags/linux-wsl-lts-${{ env.longterm_version }}.tar.gz
