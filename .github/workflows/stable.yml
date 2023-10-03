@@ -6,7 +6,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: zhoneym/unofficial-archrootfs-workstations:latest
+    container: nevuly/nevuly-dev-base:arch
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -64,7 +64,7 @@ jobs:
           strip -v $STRIP_STATIC "$builddir/vmlinux"
           mkdir -p ../${{ env.stable_version }}-x86_64-wsl2_install/src
           ln -sr "$builddir" "../${{ env.stable_version }}-x86_64-wsl2_install/src/${{ env.stable_version }}-x86_64-wsl2"
-          tar -c --zstd -f ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst ${{ env.stable_version }}-x86_64-wsl2_install
+          tar -c --zstd -f ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst ../${{ env.stable_version }}-x86_64-wsl2_install
           sha256sum ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst > ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst.sha256
           cp ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst ../
           cp ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst.sha256 ../
