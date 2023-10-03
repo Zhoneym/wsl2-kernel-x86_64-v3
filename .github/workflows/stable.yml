@@ -3,6 +3,12 @@ on:
   workflow_dispatch:
 env:
   stable_version: 6.5.5
+  builddir: ../6.5.5-x86_64-wsl2_install/lib/modules/6.5.5-x86_64-wsl2/build
+  arch:
+  file:
+  STRIP_SHARED:
+  STRIP_BINARIES:
+  STRIP_STATIC:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,48 +28,45 @@ jobs:
           make modules_install INSTALL_MOD_PATH=../${{ env.stable_version }}-x86_64-wsl2_install CFLAGS="-march=x86-64-v3 -mtune=native -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -mcx16 -mpopcnt -msse4.1 -msse4.2 -mssse3 -mavx -mavx2 -mbmi -mbmi2 -mf16c -mfma -mmovbe -mxsave" CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS" LTOFLAGS="-flto=thin -falign-functions=32" RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=x86-64-v3" GOAMD64="v3"
           rm -rf ../${{ env.stable_version }}-x86_64-wsl2_install/lib/modules/${{ env.stable_version }}-x86_64-wsl2/build
           mkdir -p ../${{ env.stable_version }}-x86_64-wsl2_install/lib/modules/${{ env.stable_version }}-x86_64-wsl2/build
-          local builddir=../${{ env.stable_version }}-x86_64-wsl2_install/lib/modules/${{ env.stable_version }}-x86_64-wsl2/build
-          install -Dt "$builddir" -m644 Makefile Module.symvers System.map vmlinux
-          install -Dt "$builddir/kernel" -m644 kernel/Makefile
-          install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
-          cp -t "$builddir" -a scripts
-          install -Dt "$builddir/tools/objtool" tools/objtool/objtool
-          install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
-          cp -t "$builddir" -a include
-          cp -t "$builddir/arch/x86" -a arch/x86/include
-          install -Dt "$builddir/arch/x86/kernel" -m644 arch/x86/kernel/asm-offsets.s
-          install -Dt "$builddir/drivers/md" -m644 drivers/md/*.h
-          install -Dt "$builddir/net/mac80211" -m644 net/mac80211/*.h
-          install -Dt "$builddir/drivers/media/i2c" -m644 drivers/media/i2c/msp3400-driver.h
-          install -Dt "$builddir/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
-          install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
-          install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
-          install -Dt "$builddir/drivers/iio/common/hid-sensors" -m644 drivers/iio/common/hid-sensors/*.h
-          find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
-          local arch
-          for arch in "$builddir"/arch/*/; do
-            [[ $arch = */x86/ ]] && continue
-            echo "Removing $(basename "$arch")"
-            rm -r "$arch"
+          install -Dt "${{ env.builddir }}" -m644 Makefile Module.symvers System.map vmlinux
+          install -Dt "${{ env.builddir }}/kernel" -m644 kernel/Makefile
+          install -Dt "${{ env.builddir }}/arch/x86" -m644 arch/x86/Makefile
+          cp -t "${{ env.builddir }}" -a scripts
+          install -Dt "${{ env.builddir }}/tools/objtool" tools/objtool/objtool
+          install -Dt "${{ env.builddir }}/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
+          cp -t "${{ env.builddir }}" -a include
+          cp -t "${{ env.builddir }}/arch/x86" -a arch/x86/include
+          install -Dt "${{ env.builddir }}/arch/x86/kernel" -m644 arch/x86/kernel/asm-offsets.s
+          install -Dt "${{ env.builddir }}/drivers/md" -m644 drivers/md/*.h
+          install -Dt "${{ env.builddir }}/net/mac80211" -m644 net/mac80211/*.h
+          install -Dt "${{ env.builddir }}/drivers/media/i2c" -m644 drivers/media/i2c/msp3400-driver.h
+          install -Dt "${{ env.builddir }}/drivers/media/usb/dvb-usb" -m644 drivers/media/usb/dvb-usb/*.h
+          install -Dt "${{ env.builddir }}/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
+          install -Dt "${{ env.builddir }}/drivers/media/tuners" -m644 drivers/media/tuners/*.h
+          install -Dt "${{ env.builddir }}/drivers/iio/common/hid-sensors" -m644 drivers/iio/common/hid-sensors/*.h
+          find . -name 'Kconfig*' -exec install -Dm644 {} "${{ env.builddir }}/{}" \;
+          for ${{env.arch}} in "${{ env.builddir }}"/arch/*/; do
+            [[ ${{env.arch}} = */x86/ ]] && continue
+            echo "Removing $(basename "${{env.arch}}")"
+            rm -r "${{env.arch}}"
           done
-          find -L "$builddir" -type l -printf 'Removing %P\n' -delete
-          find "$builddir" -type f -name '*.o' -printf 'Removing %P\n' -delete
-          local file
-          while read -rd '' file; do
-            case "$(file -Sib "$file")" in
-            application/x-sharedlib\;*)
-                strip -v $STRIP_SHARED "$file" ;;
-            application/x-archive\;*)
-              strip -v $STRIP_STATIC "$file" ;;
-            application/x-executable\;*)
-              strip -v $STRIP_BINARIES "$file" ;;
-            application/x-pie-executable\;*)
-              strip -v $STRIP_SHARED "$file" ;;
+          find -L "${{ env.builddir }}" -type l -printf 'Removing %P\n' -delete
+          find "${{ env.builddir }}" -type f -name '*.o' -printf 'Removing %P\n' -delete
+          while read -rd '' ${{ env.file }}; do
+            case "$(file -Sib "${{ env.file }}")" in
+              application/x-sharedlib\;*)
+                strip -v ${{ env.STRIP_SHARED }} ${{ env.file }} ;;
+              application/x-archive\;*)
+                strip -v ${{ env.STRIP_STATIC }} ${{ env.file }} ;;
+              application/x-executable\;*)
+                strip -v ${{ env.STRIP_BINARIES }} ${{ env.file }} ;;
+              application/x-pie-executable\;*)
+                strip -v ${{ env.STRIP_SHARED }} ${{ env.file }} ;;
             esac
-          done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
-          strip -v $STRIP_STATIC "$builddir/vmlinux"
+          done < <(find "${{ env.builddir }}" -type f -perm -u+x ! -name vmlinux -print0)
+          strip -v ${{ env.STRIP_STATIC }} "${{ env.builddir }}/vmlinux"
           mkdir -p ../${{ env.stable_version }}-x86_64-wsl2_install/src
-          ln -sr "$builddir" "../${{ env.stable_version }}-x86_64-wsl2_install/src/${{ env.stable_version }}-x86_64-wsl2"
+          ln -sr "${{ env.builddir }}" "../${{ env.stable_version }}-x86_64-wsl2_install/src/${{ env.stable_version }}-x86_64-wsl2"
           tar -c --zstd -f ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst ../${{ env.stable_version }}-x86_64-wsl2_install
           sha256sum ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst > ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst.sha256
           cp ${{ env.stable_version }}-x86_64-wsl2_install.tar.zst ../
