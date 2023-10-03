@@ -1,4 +1,4 @@
-name: compile wsl2 kernel
+name: compile wsl2 stable-kernel
 on: 
   workflow_dispatch:
 env:
