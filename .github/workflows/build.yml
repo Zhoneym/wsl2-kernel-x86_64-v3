@@ -2,8 +2,8 @@ name: compile wsl2 kernel
 on: 
   workflow_dispatch:
 env:
-  stable_version: 6.5.4
-  longterm_version: 6.1.54
+  stable_version: 6.5.5
+  longterm_version: 6.1.55
 jobs:
   build:
     runs-on: ubuntu-latest
