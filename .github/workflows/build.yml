@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      TAG_VERSION: "2023-08-08"
+      TAG_VERSION: "2023-10-03"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
