@@ -6,8 +6,8 @@ It has higher performance than the official kernel(about 8-12% improvement), and
 
 | Kernel Version | Status |
 |:--------------:|:------:|
-| 6.6.25 | Support until release new LTS kernel |
-| 6.8.4 | Support |
+| 6.6.28 | Support until release new LTS kernel |
+| 6.8.7 | Support |
 
 
 [![compile wsl2 kernel](https://github.com/Zhoneym/wsl2-kernel-x86_64-v3/actions/workflows/build.yml/badge.svg)](https://github.com/Zhoneym/wsl2-kernel-x86_64-v3/actions/workflows/build.yml)
