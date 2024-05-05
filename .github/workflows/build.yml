@@ -2,8 +2,8 @@ name: wsl2-kernel-x86_64-v3
 on: 
   workflow_dispatch:
 env:
-  stable_version: 6.8.8
-  longterm_version: 6.6.29
+  stable_version: 6.8.9
+  longterm_version: 6.6.30
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,34 +20,34 @@ jobs:
             wget https://github.com/Nevuly/WSL2-Linux-Kernel-Rolling/archive/refs/tags/linux-wsl-stable-${{ env.stable_version }}.tar.gz
             tar -xzvf linux-wsl-stable-${{ env.stable_version }}.tar.gz
             cd WSL2-Linux-Kernel-Rolling-linux-wsl-stable-${{ env.stable_version }}
-            sed -i 's/-WSL2-STABLE/-x86_64-wsl2/g' arch/x86/configs/config-wsl-x86
+            sed -i 's/-WSL2-STABLE/-microsoft-standard-WSL2/g' arch/x86/configs/config-wsl-x86
             make KCONFIG_CONFIG=arch/x86/configs/config-wsl-x86 -j $(nproc) CFLAGS="-march=x86-64-v3 -mtune=native -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -mcx16 -mpopcnt -msse4.1 -msse4.2 -mssse3 -mavx -mavx2 -mbmi -mbmi2 -mf16c -mfma -mmovbe -mxsave" CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS" LTOFLAGS="-flto=thin -falign-functions=32" RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=x86-64-v3" GOAMD64="v3"
-            cp arch/x86/boot/bzImage ../stable-bzImage-${{ env.stable_version }}-x86_64-wsl2
-            mkdir -p stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install
-            make modules_install INSTALL_MOD_PATH=stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install CFLAGS="-march=x86-64-v3 -mtune=native -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -mcx16 -mpopcnt -msse4.1 -msse4.2 -mssse3 -mavx -mavx2 -mbmi -mbmi2 -mf16c -mfma -mmovbe -mxsave" CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS" LTOFLAGS="-flto=thin -falign-functions=32" RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=x86-64-v3" GOAMD64="v3"
-            tar -czvf stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install.tar.gz stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install
-            sha256sum stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install.tar.gz > stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install.tar.gz.sha256
-            cp stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install.tar.gz ../
-            cp stable-bzImage-${{ env.stable_version }}-x86_64-wsl2_modules_install.tar.gz.sha256 ../
+            cp arch/x86/boot/bzImage ../stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2
+            mkdir -p stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2_modules_install
+            make modules_install INSTALL_MOD_PATH=stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2_modules_install CFLAGS="-march=x86-64-v3 -mtune=native -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -mcx16 -mpopcnt -msse4.1 -msse4.2 -mssse3 -mavx -mavx2 -mbmi -mbmi2 -mf16c -mfma -mmovbe -mxsave" CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS" LTOFLAGS="-flto=thin -falign-functions=32" RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=x86-64-v3" GOAMD64="v3"
+            tar -czvf stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2_modules_install.tar.gz stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2_modules_install
+            sha256sum stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2_modules_install.tar.gz > stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2_modules_install.tar.gz.sha256
+            cp stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2_modules_install.tar.gz ../
+            cp stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2_modules_install.tar.gz.sha256 ../
             cd ..
-            sha256sum stable-bzImage-${{ env.stable_version }}-x86_64-wsl2 > stable-bzImage-${{ env.stable_version }}-x86_64-wsl2.sha256
+            sha256sum stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2 > stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2.sha256
             tar -czvf WSL2-Linux-Kernel-Rolling-linux-wsl-stable-${{ env.stable_version }}.tar.gz WSL2-Linux-Kernel-Rolling-linux-wsl-stable-${{ env.stable_version }}/
             
           else
             wget https://github.com/Nevuly/WSL2-Linux-Kernel-Rolling-LTS/archive/refs/tags/linux-wsl-lts-${{ env.longterm_version }}.tar.gz
             tar -xzvf linux-wsl-lts-${{ env.longterm_version }}.tar.gz
             cd WSL2-Linux-Kernel-Rolling-LTS-linux-wsl-lts-${{ env.longterm_version }}
-            sed -i 's/-WSL2-LTS/-longterm-x86_64-wsl2/g' arch/x86/configs/config-wsl-x86
+            sed -i 's/-WSL2-LTS/-microsoft-standard-WSL2/g' arch/x86/configs/config-wsl-x86
             make KCONFIG_CONFIG=arch/x86/configs/config-wsl-x86 -j $(nproc) CFLAGS="-march=x86-64-v3 -mtune=native -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -mcx16 -mpopcnt -msse4.1 -msse4.2 -mssse3 -mavx -mavx2 -mbmi -mbmi2 -mf16c -mfma -mmovbe -mxsave" CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS" LTOFLAGS="-flto=thin -falign-functions=32" RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=x86-64-v3" GOAMD64="v3"
-            cp arch/x86/boot/bzImage ../longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2
-            mkdir -p longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2_modules_install
-            make modules_install INSTALL_MOD_PATH=longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2_modules_install CFLAGS="-march=x86-64-v3 -mtune=native -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -mcx16 -mpopcnt -msse4.1 -msse4.2 -mssse3 -mavx -mavx2 -mbmi -mbmi2 -mf16c -mfma -mmovbe -mxsave" CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS" LTOFLAGS="-flto=thin -falign-functions=32" RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=x86-64-v3" GOAMD64="v3"
-            tar -czvf longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2_modules_install.tar.gz longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2_modules_install
-            sha256sum longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2_modules_install.tar.gz > longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2_modules_install.tar.gz.sha256
-            cp longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2_modules_install.tar.gz ../
-            cp longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2_modules_install.tar.gz.sha256 ../
+            cp arch/x86/boot/bzImage ../longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2
+            mkdir -p longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2_modules_install
+            make modules_install INSTALL_MOD_PATH=longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2_modules_install CFLAGS="-march=x86-64-v3 -mtune=native -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -mcx16 -mpopcnt -msse4.1 -msse4.2 -mssse3 -mavx -mavx2 -mbmi -mbmi2 -mf16c -mfma -mmovbe -mxsave" CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS" LTOFLAGS="-flto=thin -falign-functions=32" RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=x86-64-v3" GOAMD64="v3"
+            tar -czvf longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2_modules_install.tar.gz longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2_modules_install
+            sha256sum longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2_modules_install.tar.gz > longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2_modules_install.tar.gz.sha256
+            cp longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2_modules_install.tar.gz ../
+            cp longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2_modules_install.tar.gz.sha256 ../
             cd ..
-            sha256sum longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2 > longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2.sha256
+            sha256sum longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2 > longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2.sha256
             tar -czvf WSL2-Linux-Kernel-Rolling-LTS-linux-wsl-lts-${{ env.longterm_version }}.tar.gz WSL2-Linux-Kernel-Rolling-LTS-linux-wsl-lts-${{ env.longterm_version }}/
             
           fi
@@ -58,17 +58,17 @@ jobs:
         with:
           name: artifacts
           path: |
-            stable-bzImage-${{ env.stable_version }}-x86_64-wsl2
-            stable-bzImage-${{ env.stable_version }}-x86_64-wsl2.sha256
+            stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2
+            stable-bzImage-${{ env.stable_version }}-microsoft-standard-WSL2.sha256
             WSL2-Linux-Kernel-Rolling-linux-wsl-stable-${{ env.stable_version }}.tar.gz
-            longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2
-            longterm-bzImage-${{ env.longterm_version }}-x86_64-wsl2.sha256
+            longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2
+            longterm-bzImage-${{ env.longterm_version }}-microsoft-standard-WSL2.sha256
             WSL2-Linux-Kernel-Rolling-LTS-linux-wsl-lts-${{ env.longterm_version }}.tar.gz
   release:
     runs-on: ubuntu-latest
     needs: build
     env:
-      TAG_VERSION: "2024-04-28"
+      TAG_VERSION: "2024-05-05"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
